@@ -1,13 +1,80 @@
+import { useState } from "react";
 import { NoteForm } from "./components/NoteForm";
 import { NoteList } from "./components/NoteList";
 import { SearchBar } from "./components/SearchBar";
+import type { Filter, Note } from "./types/types";
+
+const MOCK_NOTES: Note[] = [
+  {
+    id: "1",
+    title: "Nota 1",
+    content: "contenido de la nota",
+    tags: ["react", "node"],
+    createdAt: new Date("2024-01-15"),
+  },
+  {
+    id: "2",
+    title: "Nota 2",
+    content: "contenido de la nota 2",
+    tags: ["JS", "dev"],
+    createdAt: new Date("2025-02-15"),
+  },
+  {
+    id: "3",
+    title: "Nota 3",
+    content: "contenido de la nota 3",
+    tags: ["JS", "dev", "TS"],
+    createdAt: new Date("2025-02-16"),
+  },
+];
 
 export const App = () => {
+  const [notes, setNotes] = useState<Note[]>(MOCK_NOTES);
+  const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState<Filter>("newest");
+  const derivedNotes = notes
+    .filter(
+      (note) =>
+        note.title.toLowerCase().includes(query.toLowerCase()) ||
+        note.content.toLowerCase().includes(query.toLowerCase()),
+    )
+    .sort((a, b) => {
+      if (sortBy === "alphabetically") return a.title.localeCompare(b.title);
+      const order = sortBy === "newest" ? -1 : 1;
+      return order * (a.createdAt.getTime() - b.createdAt.getTime());
+    });
+
+  const createNote = (note: Note) => {
+    if (!note.title.trim() || !note.content.trim()) return;
+
+    setNotes([...notes, note]);
+  };
+
+  const deleteNote = (id: string) => {
+    const newNotes = notes.filter((note) => note.id !== id);
+    setNotes(newNotes);
+  };
+
+  const editNote = (
+    id: string,
+    updatedData: Omit<Note, "id" | "createdAt">,
+  ) => {
+    const newNotes = notes.map((note) =>
+      note.id === id ? { ...note, ...updatedData } : note,
+    );
+    setNotes(newNotes);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-5 bg-neutral-950">
       <div className="flex flex-col gap-3 items-center bg-neutral-900 border border-neutral-700 rounded-xl p-5 w-full max-w-2xl">
         <h1 className="text-white">Note App</h1>
-        <SearchBar />
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
         <NoteForm />
         <NoteList />
       </div>
