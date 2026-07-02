@@ -25,9 +25,9 @@ export const SearchBar = ({ query, setQuery, sortBy, setSortBy }: Props) => {
         name=""
         id=""
       >
-        <option value="Newest">Newest</option>
-        <option value="Oldest">Oldest</option>
-        <option value="Alphabetically">Alphabetically</option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="alphabetically">Alphabetically</option>
       </select>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NoteForm } from "./components/NoteForm";
 import { NoteList } from "./components/NoteList";
 import { SearchBar } from "./components/SearchBar";
@@ -29,9 +29,18 @@ const MOCK_NOTES: Note[] = [
 ];
 
 export const App = () => {
-  const [notes, setNotes] = useState<Note[]>(MOCK_NOTES);
+  const getNotes = (): Note[] => {
+    const stored = JSON.parse(localStorage.getItem("notes") || "[]");
+    return stored.map((note: Note) => ({
+      ...note,
+      createdAt: new Date(note.createdAt),
+    }));
+  };
+
+  const [notes, setNotes] = useState<Note[]>(getNotes);
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState<Filter>("newest");
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
   const derivedNotes = notes
     .filter(
       (note) =>
@@ -49,6 +58,10 @@ export const App = () => {
 
     setNotes([...notes, note]);
   };
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   const deleteNote = (id: string) => {
     const newNotes = notes.filter((note) => note.id !== id);
@@ -68,15 +81,30 @@ export const App = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-5 bg-neutral-950">
       <div className="flex flex-col gap-3 items-center bg-neutral-900 border border-neutral-700 rounded-xl p-5 w-full max-w-2xl">
-        <h1 className="text-white">Note App</h1>
+        <div className="flex justify-between w-full">
+          <h1 className="text-white">Note App</h1>
+          <span className="text-white bg-neutral-600 py-0.2 px-2 rounded-lg ">
+            {notes.length} Notes
+          </span>
+        </div>
+
         <SearchBar
           query={query}
           setQuery={setQuery}
           sortBy={sortBy}
           setSortBy={setSortBy}
         />
-        <NoteForm />
-        <NoteList />
+        <NoteForm
+          createNote={createNote}
+          editNote={editNote}
+          editingNote={editingNote}
+          setEditingNote={setEditingNote}
+        />
+        <NoteList
+          notes={derivedNotes}
+          deleteNote={deleteNote}
+          setEditingNote={setEditingNote}
+        />
       </div>
     </div>
   );

@@ -1,26 +1,35 @@
 import { FaEdit } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
+import type { Note } from "../types/types";
 
-export const NoteCard = () => {
+interface Props {
+  note: Note;
+  deleteNote: (id: string) => void;
+  setEditingNote: (note: Note | null) => void;
+}
+
+export const NoteCard = ({ note, deleteNote, setEditingNote }: Props) => {
   return (
     <div className="flex flex-col gap-2 bg-neutral-800 p-2">
       <div className="flex flex-col gap-1">
-        <h3 className="text-white font-semibold text-lg">Title</h3>
-        <p className="text-white">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestias,
-          nobis.
-        </p>
+        <h3 className="text-white font-semibold text-lg">{note.title}</h3>
+        <p className="text-white">{note.content}</p>
         <div>
-          <span className="bg-red-800 text-white text-sm px-2 py-0.5 rounded-lg">
-            Tag
-          </span>
+          {note.tags.map((nt) => (
+            <span
+              className="bg-red-800 text-white text-sm px-2 py-0.5 rounded-lg mr-2"
+              key={nt}
+            >
+              {nt}
+            </span>
+          ))}
         </div>
       </div>
       <div className="flex justify-end gap-2 text-white">
-        <button className="cursor-pointer">
+        <button onClick={() => setEditingNote(note)} className="cursor-pointer">
           <FaEdit />
         </button>
-        <button className="cursor-pointer">
+        <button onClick={() => deleteNote(note.id)} className="cursor-pointer">
           <FaTrashAlt />
         </button>
       </div>
