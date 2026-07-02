@@ -4,30 +4,6 @@ import { NoteList } from "./components/NoteList";
 import { SearchBar } from "./components/SearchBar";
 import type { Filter, Note } from "./types/types";
 
-const MOCK_NOTES: Note[] = [
-  {
-    id: "1",
-    title: "Nota 1",
-    content: "contenido de la nota",
-    tags: ["react", "node"],
-    createdAt: new Date("2024-01-15"),
-  },
-  {
-    id: "2",
-    title: "Nota 2",
-    content: "contenido de la nota 2",
-    tags: ["JS", "dev"],
-    createdAt: new Date("2025-02-15"),
-  },
-  {
-    id: "3",
-    title: "Nota 3",
-    content: "contenido de la nota 3",
-    tags: ["JS", "dev", "TS"],
-    createdAt: new Date("2025-02-16"),
-  },
-];
-
 export const App = () => {
   const getNotes = (): Note[] => {
     const stored = JSON.parse(localStorage.getItem("notes") || "[]");
