@@ -24,7 +24,7 @@ A note-taking app with real-time search, tags, sorting, and edit mode. Built wit
 ## Architecture
 
 ```
-<App>              ← state + logic
+<App>              ← composition, uses useNotes hook
   ├── <SearchBar>  ← controlled search input and sort select
   ├── <NoteForm>   ← create and edit mode, controlled inputs
   └── <NoteList>   ← renders filtered + sorted notes
@@ -35,11 +35,12 @@ A note-taking app with real-time search, tags, sorting, and edit mode. Built wit
 
 - Derived state for search and sort (no duplicate state)
 - Dual-purpose form: create and edit driven by `editingNote`
-- Lift state up — `editingNote` lives in App
+- Lift state up — `editingNote` lives in the hook
 - Props drilling for callbacks
 - Multi-field controlled form with tag parsing (string to array and back)
 - `localStorage` persistence with date revival on read
 - `useEffect` to preload the form in edit mode
+- Custom hook `useNotes` for logic separation
 
 ## Getting Started
 
